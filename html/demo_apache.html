@@ -1,0 +1,1350 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html style="direction: ltr;">
+<head>
+
+	
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+
+	
+	
+  <title>Configura&ccedil;&atilde;o de Apache</title>
+  <meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+
+	
+  <meta name="CREATED" content="20050315;16121900">
+
+	
+  <meta name="CHANGED" content="20050328;18261400">
+
+	
+  <meta name="ProgId" content="FrontPage.Editor.Document">
+  <meta content="Luis Bernardo" name="author">
+  <meta content="Demonstra&ccedil;&atilde;o de configura&ccedil;&atilde;o de Apache" name="description">
+</head>
+
+
+<body>
+
+<h1 style="text-align: left;" lang="pt-PT"><img src="gifs/Logo_FCT-UNL.gif" alt="Logo FCT/UNL grande" border="0" height="94" width="600"></h1>
+<p>
+<font size="+3">Redes
+Integradas de Telecomunica&ccedil;&otilde;es&nbsp; II</font> </p>
+
+<p><font size="+2">2006/2007</font></p>
+<hr>
+<h4></h4>
+<h1 style="text-align: left;" lang="pt-PT">Demonstra&ccedil;&atilde;o de Apache</h1>
+
+<p lang="pt-PT">Esta demonstra&ccedil;&atilde;o destina-se a fornecer
+os conhecimentos b&aacute;sicos para instalar e configurar um
+servidor Apache num sistema Linux Fedora Core. Para al&eacute;m de
+algum conte&uacute;do te&oacute;rico, inclui alguns exerc&iacute;cios
+pr&aacute;ticos onde se podem exercitar os conhecimentos.</p>
+
+<p><span lang="pt-PT">Esta demonstra&ccedil;&atilde;o usa o conte&uacute;do
+do </span><a href="http://httpd.apache.org/docs-2.0/"><span lang="pt-PT">manual
+do Apache 2.0</span></a> <span lang="pt-PT">e de
+</span><a href="http://www.linuxhomenetworking.com/linux-hn/apachebasic.htm"><span lang="pt-PT">http://www.linuxhomenetworking.com/</span></a>
+<span lang="pt-PT">como p&aacute;ginas de refer&ecirc;ncia para o
+conte&uacute;do te&oacute;rico.</span> <span lang="pt-PT">Recomenda-se
+uma leitura pr&eacute;via da p&aacute;gina
+<a href="http://www.linuxhomenetworking.com/linux-hn/apachebasic.htm">http://www.linuxhomenetworking.com/</a>.</span></p>
+
+<hr>
+<h2 lang="pt-PT">&Iacute;ndice</h2>
+
+<ul>
+
+	<li>
+    <p style="margin-bottom: 0cm;"><a href="#1">1. Co<span lang="pt-PT">nfigura&ccedil;&atilde;o
+	b&aacute;sica do servidor Apache 2.0</span></a></p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><a href="#2">2. <span lang="pt-PT">Acesso
+	condicionado a p&aacute;ginas</span></a></p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><a href="#3"><span lang="pt-PT">3</span>.
+	<span lang="pt-PT">Configura&ccedil;&atilde;o de servidores virtuais</span></a></p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><a href="#4">4. <span lang="pt-PT">Configura&ccedil;&atilde;o
+	proxy</span></a> 
+	</p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><a href="#Exerc%C3%ADcio">5.
+	Exerc&iacute;cio</a></p>
+
+  </li>
+</ul>
+
+<hr>
+<h2 lang="pt-PT"><a name="1"></a>1. Configura&ccedil;&atilde;o b&aacute;sica
+do servidor Apache 2.0</h2>
+
+<h3 lang="pt-PT">Arranque do servidor</h3>
+
+<p align="justify">O apache &eacute; constitu&iacute;do pelo servidor
+principal (<i>/usr/sbin/httpd</i>) mais um conjunto de m&oacute;dulos,
+acess&iacute;veis em <span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;"><i>/etc/httpd/modules</i></span>.</p>
+
+<p align="justify" lang="pt-PT">Pode ser arrancado numa interface
+gr&aacute;fica, ou utilizando o script <i>"/etc/init.d/httpd</i>"
+directamente, ou atrav&eacute;s do comando "<i>service httpd</i>":</p>
+<a name="AutoNumber1"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><i>service httpd start</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// Arranca o servidor<br>
+      <i>service httpd stop</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// Para o servidor<br>
+      <i>service httpd restart</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// Reinicia o servidor</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p lang="pt-PT">O comando <i>chkconfig</i> &eacute; usado para ligar
+ou desligar o arranque do servidor apache durante o arranque do
+computador:</p>
+<a name="AutoNumber2"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p style=""><i>chkconfig httpd on&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// Liga Apache<br>
+      <span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">chkconfig
+			httpd off&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //
+			Desliga Apache</span></i></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<h3 lang="pt-PT">Ficheiros de configura&ccedil;&atilde;o</h3>
+
+<p align="justify"><span lang="pt-PT">O ficheiro de configura&ccedil;&atilde;o
+principal do servidor Apache &eacute; </span><b>/etc/httpd/conf/httpd.conf</b>.
+Este ficheiro &eacute; lido durante o arranque do servidor, sendo
+necess&aacute;rio reiniciar o servidor cada vez que &eacute;
+modificado. Na distribui&ccedil;&atilde;o Fedora Core tem o seguinte
+<a href="httpd.htm">conte&uacute;do</a>. 
+</p>
+
+<p align="justify"><span lang="pt-PT">Na directoria </span><b>/etc/httpd/conf.d/
+</b><span lang="pt-PT">existem outros ficheiros de configura&ccedil;&atilde;o
+de m&oacute;dulos espec&iacute;ficos para o suporte de php, SSL,
+Perl, etc, <span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">n&atilde;o focados
+nesta demonstra&ccedil;&atilde;o.</span></span></p>
+
+<h4>httpd.conf</h4>
+
+<p>O ficheiro <i>httpd.conf</i> est&aacute; organizado por sec&ccedil;&otilde;es.
+A <b>primeira sec&ccedil;&atilde;o</b> tem um conjunto de
+configura&ccedil;&otilde;es globais do servidor web. Exemplos de
+configura&ccedil;&otilde;es nesta sec&ccedil;&atilde;o s&atilde;o:</p>
+<a name="AutoNumber3"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="34%">
+			
+      <p><i>ServerRoot "/etc/httpd"</i></p>
+
+		</td>
+
+		<td width="66%">
+			
+      <p>Directoria raiz onde est&atilde;o ficheiros de configura&ccedil;&atilde;o
+			e os m&oacute;dulos</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="34%">
+			
+      <p><i>Timeout 120</i></p>
+
+		</td>
+
+		<td width="66%">
+			
+      <p>Tempo m&aacute;ximo de espera por um pedido numa liga&ccedil;&atilde;o
+			(seg)</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="34%">
+			
+      <p><i>KeepAlive Off</i></p>
+
+		</td>
+
+		<td width="66%">
+			
+      <p>Permite reutiliza&ccedil;&atilde;o de liga&ccedil;&otilde;es
+			para HTTP/1.1 se <i>On</i></p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="34%">
+			
+      <p><i>MaxKeepAliveRequests 100</i></p>
+
+		</td>
+
+		<td width="66%">
+			
+      <p>N&ordm; m&aacute;ximo pedidos por liga&ccedil;&atilde;o
+			reutilizada</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="34%">
+			
+      <p><i>KeepAliveTimeout 15</i></p>
+
+		</td>
+
+		<td width="66%">
+			
+      <p>Tempo m&aacute;ximo de espera por novo pedido (seg)</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="34%">
+			
+      <p><i>Listen
+80&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Todos<br>
+Listen 193.136.120.1:80&nbsp;&nbsp;&nbsp;&nbsp; // S&oacute;
+			IPv4<br>
+
+            <span style="background-position: 0%; background-image: url(none); background-repeat: repeat; background-attachment: scroll;">
+            <font size="2">Listen
+			[2002:690:2005:10:33::11]:80&nbsp;&nbsp;&nbsp;&nbsp; </font>// S&oacute; IPv6</span></i></p>
+
+		</td>
+
+		<td width="66%">
+			
+      <p>Define porto (e endere&ccedil;o IP) onde o servidor recebe
+			comandos HTTP.</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="34%">
+			
+      <p>LoadModule <i>foo_module</i> <i>modules/mod_foo.so</i></p>
+
+		</td>
+
+		<td width="66%">
+			
+      <p>Carrega em mem&oacute;ria o c&oacute;digo de um m&oacute;dulo
+			sobre a forma de uma biblioteca de liga&ccedil;&atilde;o din&acirc;mica.</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="34%">
+			
+      <p><i>Include conf.d/*.conf </i>
+			</p>
+
+		</td>
+
+		<td width="66%">
+			
+      <p>L&ecirc; todos os ficheiros de configura&ccedil;&atilde;o da
+			subdirectoria <i>conf.d/ </i>relativos &agrave; raiz da
+			distribui&ccedil;&atilde;o</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>A <b>segunda sec&ccedil;&atilde;o</b> tem a configura&ccedil;&atilde;o
+do servidor web principal. Exemplos de configura&ccedil;&otilde;es
+nesta sec&ccedil;&atilde;o s&atilde;o:</p>
+<a name="AutoNumber4"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="38%">
+			
+      <p><i>User apache</i><br>
+      <i>Group apache</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Define o utilizador (<i>uid</i>) e o grupo (<i>gid</i>)
+			com que corre o <i>httpd</i></p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>ServerAdmin root@localhost </i>
+			</p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Endere&ccedil;o correio electr&oacute;nico do
+			administrador do servidor</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>ServerName new.host.name:80</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Define o nome DNS/porto do servidor - por omiss&atilde;o
+			est&aacute; comentado</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>DocumentRoot "/var/www/html" </i>
+			</p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Directoria raiz onde est&aacute; o '/' das
+			p&aacute;ginas web.</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>&lt;Directory /&gt;<br>
+&nbsp;&nbsp;&nbsp; Options
+			FollowSymLinks<br>
+&nbsp;&nbsp;&nbsp; AllowOverride
+			None<br>
+&lt;/Directory&gt; </i>
+			</p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Define op&ccedil;&otilde;es por omiss&atilde;o
+			para todas as p&aacute;ginas web:<br>
+-<i>Options FollowSymLinks </i>-
+			segue links simb&oacute;licos em todas as pastas.<br>
+(<a href="http://httpd.apache.org/docs-2.0/mod/core.html#options">mais
+			sobre options</a>)<br>
+- AllowOverride None - n&atilde;o permite
+			redefinir as permiss&otilde;es em subdirect&oacute;rios (<a href="#2">mais
+			sobre seguran&ccedil;a</a>)</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>&lt;Directory "/var/www/html"&gt;<br>
+...<br>
+&lt;/Directory&gt;</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Defini&ccedil;&otilde;es relativas ao direct&oacute;rio
+			"/var/www/html" no sistema de ficheiros, que no exemplo
+			corresponde ao URL raiz '/'</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>Order allow,deny<br>
+Allow from all </i>
+			</p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Regras de acesso a direct&oacute;rio: deixa os
+			browsers aceder a qualquer ficheiro no servidor web</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>DirectoryIndex index.html index.html.var</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Ficheiro devolvido quando o URL selecciona uma
+			directoria; var significa c&oacute;digo de pa&iacute;s (e.g. pt) 
+			</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>AccessFileName .htaccess </i>
+			</p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Nome de ficheiro de redifini&ccedil;&atilde;o de
+			regras de acesso a directoria</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>TypesConfig /etc/mime.types </i>
+			</p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Tabela que associa extens&otilde;es a tipos MIME</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>DefaultType text/plain </i>
+			</p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Tipo MIME devolvido quando a extens&atilde;o n&atilde;o
+			est&aacute; na tabela</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>ErrorLog logs/error_log<br>
+LogLevel warn<br>
+LogFormat ...</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Controlo da informa&ccedil;&atilde;o de log do
+			servidor: onde &eacute; guardada, o que &eacute; guardado; como &eacute;
+			guardado.</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>Alias /icons/ "/var/www/icons/" <br>
+ScriptAlias
+			/cgi-bin/ "/var/www/cgi-bin/"</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Defini&ccedil;&atilde;o de psed&oacute;minos para
+			directorias locais</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>AddLanguage pt .pt</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Defini&ccedil;&atilde;o de extens&atilde;o de
+			ficheiros associados a uma lingua</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>AddCharset ISO-8859-1 .iso8859-1 .latin1</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Defini&ccedil;&atilde;o de tipo de caracteres &agrave;
+			lista global</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>AddDefaultCharset UTF-8</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Defini&ccedil;&atilde;o do tipo de caracteres
+			devolvido. Por omiss&atilde;o vem UTF-8. <u><b>Deve ser
+			substitu&iacute;do por ISO-8859-1</b> para n&atilde;o haver
+			problemas com as ferramentas mais comuns de design de p&aacute;ginas!</u></p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>ErrorDocument 500 "The server made a boo boo."</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Defini&ccedil;&atilde;o textual da mensagem de
+			erro associada ao c&oacute;digo 500</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>ErrorDocument 500 /error/HTTP_INTERNAL_SERVER_ERROR.html.var</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Associa&ccedil;&atilde;o da mensagem de erro a um
+			ficheiro html que depende da lingua (<i>var</i> = <i>en</i> ou <i>pt</i>
+			ou etc.)</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="38%">
+			
+      <p><i>BrowserMatch "Mozilla/2" nokeepalive</i></p>
+
+		</td>
+
+		<td width="62%">
+			
+      <p align="justify">Modifica o comportamento do servidor dependendo
+			do browser (n&atilde;o envia keepalive) (<a href="http://httpd.apache.org/docs-2.0/mod/mod_setenvif.html">mais
+			informa&ccedil;&atilde;o</a>)</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p align="justify">Faltam os comandos de configura&ccedil;&atilde;o de
+procuradores e de servidores virtuais, descritos mais adiante.</p>
+
+<p align="justify">Note-se que se o Apache corre como utilizador
+apache, todas as p&aacute;ginas do servidor t&ecirc;m de poder ser
+lidas por este utilizador.</p>
+
+<hr>
+<h2 lang="pt-PT"><a name="2"></a>2. Acesso condicionado a p&aacute;ginas</h2>
+
+<h3 lang="pt-PT">Regras de acesso a ficheiros e directorias</h3>
+
+<p align="justify"><span lang="pt-PT">O ficheiro <i>httpd.conf</i>
+define as regras de acesso por omiss&atilde;o para acesso a ficheiros
+e directorias (comandos <i>Order</i>, <i>Allow</i>, <i>Deny</i>,
+<i>Indexes</i>), e pode definir regras espec&iacute;ficas para
+subdirectorias. As op&ccedil;&otilde;es <i>Allow</i> e <i>Deny</i>
+podem ser gen&eacute;ricas (<i>Allow</i> <i>from All</i> ou <i>Deny</i>
+<i>from None</i>), podem definir dom&iacute;nios DNS (e.g. </span><i>Allow
+from .example.com</i>), ou podem definir subredes m&uacute;ltiplas de
+8 bits (e.g. <i>Allow from 192.168.1</i>). &Eacute; poss&iacute;vel
+realizar a conjun&ccedil;&atilde;o ou disjun&ccedil;&atilde;o de
+regras utilizando a op&ccedil;&atilde;o <a href="http://httpd.apache.org/docs-2.0/mod/core.html#satisfy">satisfy</a>.</p>
+
+<p align="justify"><span lang="pt-PT">No entanto, pode-se delegar as
+regras para um ficheiro local &agrave; directoria (por omiss&atilde;o
+"<i>.htaccess</i>"), desde que o comando "<i>AllowOverride</i>
+<i>Limit</i>" tenha sido definido directamente, ou
+indire<span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">ctamente, numa directoria
+a nascente. (</span><a href="http://httpd.apache.org/docs-2.0/howto/htaccess.html"><span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">mais
+informa&ccedil;&atilde;o</span></a><span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">).
+Para evitar problemas de seguran&ccedil;a acrescenta-se a seguinte
+regra para proibir o acesso a todos os ficheiros come&ccedil;ados por
+.ht (e.g. <i>.htaccess</i>):</span></span></p>
+
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><i>&lt;Files ~ "^\.ht"&gt;<br>
+&nbsp;&nbsp;&nbsp;
+			Order allow,deny<br>
+&nbsp;&nbsp;&nbsp; Deny from all<br>
+&lt;/Files&gt;
+			</i>
+			</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p><span lang="pt-PT">O comando <i>AllowOverride</i> tem outras
+op&ccedil;&otilde;es para permitir revogar primitivas de autoriza&ccedil;&atilde;o
+(AuthConfig), informa&ccedil;&atilde;o sobre ficheiros (FileInfo),
+listar directorias (Indexes) (<a href="http://httpd.apache.org/docs-2.0/mod/core.html#allowoverride">mais
+informa&ccedil;&otilde;es</a>)</span></p>
+
+<h3 lang="pt-PT">Proteger p&aacute;ginas com palavras de passe 
+</h3>
+
+<p><span lang="pt-PT">Baseado em </span><a href="http://www.linuxhomenetworking.com/linux-hn/apachebasic.htm#_Toc92809467"><span lang="pt-PT">http://www.linuxhomenetworking.com/</span></a></p>
+
+<p lang="pt-PT">O apache suporta os dois modelos de autentica&ccedil;&atilde;o
+definidos no RFC 2617. Utilizando o utilit&aacute;rio <i>htpasswd</i>,
+&eacute; poss&iacute;vel definir nomes de utilizadores e palavras de
+passe. O exemplo seguinte ilustra a defini&ccedil;&atilde;o de dois
+utilizadores, no ficheiro <i>/etc/httpd/conf/.htpasswd</i>:</p>
+<a name="AutoNumber6"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p># <i>htpasswd <font color="#ff0000">-c</font>
+			/etc/httpd/conf/.htpasswd peter&nbsp;&nbsp;&nbsp; // Cria novo
+			ficheiro, s&oacute; com uma entrada<br>
+      </i># <i>htpasswd
+			/etc/httpd/conf/.htpasswd paul&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			//&nbsp; Acrescenta mais um utilizador aos existentes</i></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p lang="pt-PT">Este ficheiro tem de ser desprotegido para poder ser
+lido pelo utilizador apache:</p>
+<a name="AutoNumber7"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><i># chmod 0644 /etc/httpd/conf/.htpasswd</i></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>Para o modo b&aacute;sico, na defini&ccedil;&atilde;o de uma
+directoria no ficheiro <i>httpd.conf</i>, ou num ficheiro <i>.htaccess</i>
+dentro da directoria deve ser definida a seguinte informa&ccedil;&atilde;o:</p>
+<a name="AutoNumber8"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><i>AuthUserFile /etc/httpd/conf/.htpasswd&nbsp;&nbsp;&nbsp; //
+			Define qual &eacute; o ficheiro com as palavras de
+			passe<br>
+AuthGroupFile
+/dev/null&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// N&atilde;o s&atilde;o usados grupos<br>
+AuthName
+EnterPassword&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Nome do dom&iacute;nio de autentica&ccedil;&atilde;o<br>
+AuthType
+Basic&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Tipo de autentica&ccedil;&atilde;o<br>
+require user
+peter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Lista de utilizadores requeridos</i></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p><span lang="pt-PT">O apache tamb&eacute;m suporta o modo de
+autentica&ccedil;&atilde;o <i>digest </i>(<a href="http://httpd.apache.org/docs-2.0/mod/mod_auth_digest.html">mais
+informa&ccedil;&otilde;es</a>).</span></p>
+
+<hr>
+<h2 lang="pt-PT"><a name="3"></a>3. Configura&ccedil;&atilde;o de servidores virtuais</h2>
+
+<p align="justify"><span lang="pt-PT">Um servidor <i>httpd</i> pode
+suportar v&aacute;rios s&iacute;tios web virtuais, com conjuntos de
+p&aacute;ginas independentes, com nomes distintos. Esta sec&ccedil;&atilde;o
+foi baseada no <a href="http://httpd.apache.org/docs-2.0/vhosts/">manual
+do apache</a>.</span></p>
+
+<p align="justify" lang="pt-PT">Para criar servidores virtuais &eacute;
+necess&aacute;rios definir quais os endere&ccedil;os IP e portos onde
+o servidor vai receber os pedidos, utilizando o comando
+<i>NameVirtualHost</i> para cada par endere&ccedil;o:porto:</p>
+
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><code>NameVirtualHost <var>addr</var>[:<var>port</var>]</code></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p lang="pt-PT">Exemplos de utiliza&ccedil;&atilde;o:</p>
+<a name="AutoNumber111"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="45%">
+			
+      <p><code><i><font face="Times New Roman">NameVirtualHost</font>
+			<font face="Times New Roman">172.16.33.11:80 </font></i></code>
+			</p>
+
+		</td>
+
+		<td width="55%">
+			
+      <p>Recebe liga&ccedil;&otilde;es IPv4 na interface especificada no
+			porto 80</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="45%">
+			
+      <p><code><i><font face="Times New Roman">NameVirtualHost</font>
+			<font face="Times New Roman">[fe80::a00:20ff:fea7:ccea]:8080 </font></i></code>
+			</p>
+
+		</td>
+
+		<td width="55%">
+			
+      <p>Recebe liga&ccedil;&otilde;es IPv6 na interface especificada no
+			porto 8080</p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="45%">
+			
+      <p><code><i><font face="Times New Roman">NameVirtualHost</font> <font face="Times New Roman">*
+			</font></i></code>
+			</p>
+
+		</td>
+
+		<td width="55%">
+			
+      <p>Recebe liga&ccedil;&otilde;es para servidores virtuais em
+			qualquer IP e porto</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p lang="pt-PT">Cada servidor virtual &eacute; definido com o comando
+<i>VirtualHost</i>:</p>
+<a name="AutoNumber121"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><code><i>&lt;VirtualHost </i><var>addr</var><i>[:</i><var>port</var><i>]
+			[</i><var>addr</var><i>[:</i><var>port</var><i>]] ...&gt;<br>
+&nbsp;...
+			<br>
+&lt;/VirtualHost&gt;</i></code></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p align="justify" lang="pt-PT">Dentro de cada servidor virtual &eacute;
+necess&aacute;rio definir o nome DNS porque o servidor virtual vai
+ser identificado, utilizando o comando <i>ServerName</i>:</p>
+<a name="AutoNumber13"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p align="justify"><code><i>ServerName
+			</i><var>fully-qualified-domain-name</var><i>[:</i><var>port</var><i>]</i></code></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p align="justify" lang="pt-PT">Desta forma, &eacute; poss&iacute;vel
+definir v&aacute;rios servidores virtuais utilizando selec&ccedil;&atilde;o
+por endere&ccedil;o IP ou por nome. O comando <i>NameVirtualHost</i>
+e o campo <i>ServerName</i> apenas devem ser usados quando se usa
+selec&ccedil;&atilde;o por nome. No segundo caso (por IP), apenas
+deve ser usado o campo <i>VirtualHost</i>.</p>
+
+<p align="justify" lang="pt-PT">Dentro da defini&ccedil;&atilde;o de
+cada servidor virtual define-se qual a raiz do sistema de ficheiros
+usada (<i>DocumentRoot</i>), o administrador do servidor
+(<i>ServerAdmin</i>), onde se guardam as mensagens de erro
+(<i>ErrorLog</i>), onde est&aacute; a directoria com os scripts
+(<i>ScriptAlias</i>), etc. Ou seja, &eacute; poss&iacute;vel
+redefinir quase todas as configura&ccedil;&otilde;es globais dentro
+da defini&ccedil;&atilde;o de cada servidor virtual. Por exemplo,
+para tr&ecirc;s servidores virtuais identificados por nome:</p>
+<a name="AutoNumber14"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><code><i>NameVirtualHost 172.16.33.11<br>
+&lt;VirtualHost
+			172.16.33.11&gt;<br>
+&nbsp; ServerName <a href="http://www.pc-11.rit2.pt/">www.pc-11.rit2.pt</a>&nbsp;&nbsp;
+			// Nome DNS do primeiro servidor virtual<br>
+&nbsp; DocumentRoot
+			/www/hosts/www.pc-11.rit2.pt/docs<br>
+&nbsp; ScriptAlias /cgi-bin/
+			/www/hosts/www.pc-11.rit2.pt/cgi-bin<br>
+&lt;/VirtualHost&gt;<br>
+&lt;VirtualHost
+			172.16.33.11&gt;<br>
+&nbsp; ServerName <a href="http://www.pc-11.rit2.pt/">www.pc-21.rit2.pt</a>&nbsp;&nbsp;&nbsp;&nbsp;
+			// Nome DNS do segundo servidor virtual<br>
+&nbsp; DocumentRoot
+			/www/hosts/www.pc-21.rit2.pt/docs<br>
+&nbsp; ScriptAlias /cgi-bin/
+			/www/hosts/www.pc-21.rit2.pt/cgi-bin<br>
+&lt;/VirtualHost&gt;<br>
+&lt;VirtualHost
+			172.16.33.11&gt;<br>
+&nbsp; ServerName <a href="http://www.pc-11.rit2.pt/">www.pc-31.rit2.pt</a>&nbsp;&nbsp;&nbsp;&nbsp;
+			// Nome DNS do terceiro servidor virtual<br>
+&nbsp; DocumentRoot
+			/www/hosts/www.pc-31.rit2.pt/docs<br>
+&nbsp; ScriptAlias /cgi-bin/
+			/www/hosts/www.pc-31.rit2.pt/cgi-bin<br>
+&lt;/VirtualHost&gt;</i></code></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>Outro exemplo de configura&ccedil;&atilde;o para um endere&ccedil;o
+IPv6:</p>
+
+<p style="margin-bottom: 0cm;"><code>&lt;VirtualHost
+[fe80::a00:20ff:fea7:ccea]&gt;<br>
+ServerAdmin
+<a href="mailto:webmaster@host.example.com">webmaster@host.example.com</a><br>
+DocumentRoot
+/www/docs/host.example.com<br>
+ServerName host.example.com<br>
+ErrorLog
+logs/host.example.com-error_log<br>
+TransferLog
+logs/host.example.com-access_log<br>
+&lt;/VirtualHost&gt; </code>
+</p>
+
+<hr>
+<h2 lang="pt-PT"><a name="4"></a>4. Configura&ccedil;&atilde;o proxy</h2>
+
+<p align="justify"><span lang="pt-PT">O servidor Apache tamb&eacute;m
+oferece o <a href="http://httpd.apache.org/docs-2.0/mod/mod_proxy.html">servi&ccedil;o
+de proxy</a>. O apache pode funcionar como proxy HTTP desde que se
+carregue o m&oacute;dulo <i>mod_proxy</i>, <i>mod_proxy_http</i>, e
+realizar <i>caching</i> desde que se carregue o m&oacute;dulo
+<i>mod_cache</i>. Pode ser configurado para funcionar no modo proxy
+directo (com os clientes configurados para funcionarem com um proxy)
+ou no modo inverso (com os clientes a fazer pedidos locais, que s&atilde;o
+mapeados para p&aacute;ginas em servidores web remotos).</span></p>
+
+<h3 lang="pt-PT">Procurador directo</h3>
+
+<p lang="pt-PT">O modo convencional de funcionamento &eacute;
+activado com o comando <i>ProxyRequest</i>:</p>
+<a name="AutoNumber16"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><i>ProxyRequests On</i></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>No protocolo HTTP/1.1, o campo de cabe&ccedil;alho <i>Via</i> &eacute;
+usado para controlar de onde vem o pedido. O Apache permite controlar
+se &eacute; enviado este campo de cabe&ccedil;alho, e o n&uacute;mero
+m&aacute;ximo de procuradores atravessados (com <i>ProxyMaxForwards</i>):</p>
+<a name="AutoNumber17"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><i>ProxyVia On&nbsp; ; podia ser "Full" (acrescenta a
+			vers&atilde;o servidor); "Off" n&atilde;o acrescenta;
+			"Block" remove o campo Via; "On" acrescenta</i></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>O comando <i>ProxyTimeout</i> permite definir o n&uacute;mero de
+segundos que o proxy espera pela resposta a um pedido:</p>
+
+<table cellpadding="2" cellspacing="2">
+
+	<tbody>
+    <tr>
+
+		<td>
+			
+      <p><code>ProxyTimeout <var>seconds&nbsp; ; por omiss&atilde;o 300
+			segundos </var></code>
+			</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<h3 lang="pt-PT">Procurador inverso</h3>
+
+<p align="justify"><span lang="pt-PT">Para funcionar no modo inverso &eacute;
+necess&aacute;rio que se carreguem os m&oacute;dulos <i>mod_proxy</i>
+e <i>mod_cache</i>, e desactivar o modo directo (</span><i>ProxyRequests</i>
+<i>Off</i><span lang="pt-PT">). A configura&ccedil;&atilde;o &eacute;
+realizada utilizando os comandos </span><i>ProxyPass</i> e
+<i>ProxyPassReverse</i><span lang="pt-PT">. O comando </span><i>ProxyPass</i>
+<span lang="pt-PT">associa um caminho local a um URL remoto:</span></p>
+
+<table cellpadding="2" cellspacing="2">
+
+	<tbody>
+    <tr>
+
+		<td>
+			
+      <p><code>ProxyPass [<var>path</var>] !|<var>url</var></code></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>A seguinte linha associa um nome local a um site remot</p>
+
+<p><code>ProxyPass /mirror/foo/ http://outro.servidor.com/ </code>
+</p>
+
+<p>Supondo que o servidor local &eacute; <code>http://examplo.com/
+</code>ent&atilde;o um pedido local a
+<code>http://examplo.com/mirror/foo/bar</code> &eacute; convertido
+internamente num pedido proxy para <code>http://outro.servidor.com/bar</code>.</p>
+
+<p>A directive <code>!</code> &eacute; usada para excluir
+subdirectorias. O exemplo seguinte define um proxy inverso de todas
+as subdirectorias de <code>/mirror/foo</code> excepto os pedidos a&nbsp;
+<code>/mirror/foo/i</code><em>:</em></p>
+
+<p><code>ProxyPass /mirror/foo/i !<br>
+ProxyPass /mirror/foo
+http://outro.servidor.com </code>
+</p>
+
+<p>O comando <i>ProxyPassReverse</i> lida com resposta de redirec&ccedil;&atilde;o
+de servidor, ajustando os URLs em campos de cabe&ccedil;alho
+Location, Content-Location, e URI:</p>
+
+<table cellpadding="2" cellspacing="2">
+
+	<tbody>
+    <tr>
+
+		<td>
+			
+      <p><code>ProxyPassReverse [<var>path</var>] <var>url</var></code></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>&nbsp;Geralmente &eacute; usado com os mesmos valores do comando
+<i>ProxyPass</i>:</p>
+
+<p><code>ProxyPass /mirror/foo/
+http://outro.servidor.com/<br>
+ProxyPassReverse /mirror/foo/
+http://outro.servidor.com/ </code>
+</p>
+
+<h3 lang="pt-PT">Seguran&ccedil;a num procurador</h3>
+
+<p lang="pt-PT">A configura&ccedil;&atilde;o &eacute; igual &agrave;
+de qualquer outra p&aacute;gina local, excepto que usa a etiqueta
+<i>Proxy</i>:</p>
+<a name="AutoNumber15"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><i>&lt;Proxy *&gt;<br>
+&nbsp; Order deny,allow<br>
+&nbsp; Deny
+			from all<br>
+&nbsp; Allow from .examplo.com<br>
+&lt;/Proxy&gt; </i>
+			</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<h3 lang="pt-PT">Encadear procuradores</h3>
+
+<p>&Eacute; poss&iacute;vel direccionar os pedidos do procurador
+Apache para outro procurado utilizando o comando <i>ProxyRemote</i>:</p>
+
+<table cellpadding="2" cellspacing="2">
+
+	<tbody>
+    <tr>
+
+		<td>
+			
+      <p><code>ProxyRemote <var>match</var> <var>scheme</var>://<var>hostname</var>[:<var>port</var>]</code></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>&Eacute; poss&iacute;vel redireccionar tudo, um protocolo, ou ter
+procuradores espec&iacute;ficos para uma p&aacute;ginas:</p>
+
+<p><code>ProxyRemote http://goodguys.com/
+http://mirrorguys.com:8000<br>
+ProxyRemote *
+http://cleversite.com<br>
+ProxyRemote ftp
+http://ftpproxy.mydomain.com:8080 </code>
+</p>
+
+<p>Utilizando o comando <i>NoProxy</i> &eacute; poss&iacute;vel
+desactivar a utiliza&ccedil;&atilde;o de um procurador remoto para
+algumas p&aacute;ginas:</p>
+
+<table cellpadding="2" cellspacing="2">
+
+	<tbody>
+    <tr>
+
+		<td>
+			
+      <p><code>NoProxy <var>host</var> [<var>host</var>] ...</code></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>Os dois comandos s&atilde;o usados geralmente encadeados:</p>
+
+<p><code>ProxyRemote * http://firewall.mycompany.com:81<br>
+NoProxy
+.mycompany.com 192.168.112.0/21 172.16.33&nbsp;&nbsp;&nbsp; //
+Deactiva o procurador por nome ou por endere&ccedil;o IP</code></p>
+
+<h3 lang="pt-PT">Caching</h3>
+
+<p><span lang="pt-PT"><a href="http://httpd.apache.org/docs-2.0/mod/mod_cache.html">Ver
+mais informa&ccedil;&otilde;es</a>.</span></p>
+
+<hr>
+<p><span lang="pt-PT">H&aacute; muito mais a dizer sobre o servi<span lang="pt-PT">&ccedil;o
+web</span> do que o que aparece neste documento<span lang="pt-PT">.
+Muito mais haveria a dizer sobre o Apache, e os m&uacute;ltiplos
+m&oacute;dulos que o comp&otilde;em, incluindo o suporte de p&aacute;ginas
+din&acirc;micas (CGI, PHP, JSP, Perl, etc.). O Apache &eacute; o
+servidor web de refer&ecirc;ncia, mas nenhuma apresenta&ccedil;&atilde;o
+ficaria completa sem focar o <a href="http://www.linuxhomenetworking.com/linux-adv/squid.htm">squid</a>,
+o software de proxy web mais usado.</span> Convida-se os alunos a
+lerem mais sobre <span lang="pt-PT">estes</span> assunto<span lang="pt-PT">s
+</span>...</span></p>
+
+<hr>
+<h2 lang="pt-PT"><a name="Exerc&iacute;cio"></a>5. Exerc&iacute;cio</h2>
+
+<p lang="pt-PT">Configure o servidor Apache na sua m&aacute;quina
+local de maneira a satisfazer os seguintes requisitos:</p>
+
+<ul>
+
+	<li>
+    <p style="margin-bottom: 0cm;"><span lang="pt-PT">suportar dois
+	servidores virtuais (em <i>www1.<b>pcXX</b>.rit2.pt</i> e
+	<i>www2.<b>pcXX</b>.rit2.pt</i>), tanto para IPv4 como para IPv6,
+	onde <b><i>pcXX</i></b> representa a &aacute;rea de login do grupo.
+	Modifique a <a href="demo_dns.html">configura&ccedil;&atilde;o do
+	servidor DNS</a> acrescentado os dois nomes DNS usados neste
+	exerc&iacute;cio.</span> 
+	</p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><span lang="pt-PT">O servidor <i>www1</i>
+	deve ter a p&aacute;gina habitual que existe na directoria
+	<i>/home/rit2/www</i>; o servidor <i>www2</i> deve ter o acesso a
+	uma directoria segura com um conte&uacute;do ao seu gosto, protegida
+	com uma password.</span> 
+	</p>
+
+	</li>
+  <li>
+    <p><span lang="pt-PT">funcionar como proxy convencional para
+	todas as p&aacute;ginas externas ao laborat&oacute;rio
+	redireccionando os pedidos para o proxy do campus da fct
+	(proxy.fct.unl.pt:8080). O proxy deve ter o acesso restrito,
+	protegido por uma password.</span> 
+	</p>
+
+  </li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,1647 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html style="direction: ltr;">
+<head>
+
+	
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+
+	
+	
+  <title>Configura&ccedil;&atilde;o de DNS</title>
+  <meta name="GENERATOR" content="OpenOffice.org 1.1.3  (Linux)">
+
+	
+  <meta name="CREATED" content="20050315;16121900">
+
+	
+  <meta name="CHANGED" content="20050317;1435200">
+
+	
+  <meta name="ProgId" content="FrontPage.Editor.Document">
+  <meta content="Luis Bernardo" name="author">
+  <meta content="Demonstra&ccedil;&atilde;o de configura&ccedil;&atilde;o de DNS" name="description">
+</head>
+
+
+<body>
+
+<h1 style="text-align: left;" lang="pt-PT"><img src="gifs/Logo_FCT-UNL.gif" alt="Logo FCT/UNL grande" border="0" height="94" width="600"></h1>
+<p>
+<font size="+3">Redes
+Integradas de Telecomunica&ccedil;&otilde;es&nbsp; II</font> </p>
+
+<p><font size="+2">2006/2007</font></p>
+<hr>
+<h4></h4>
+<h1 align="center" lang="pt-PT">Configura&ccedil;&atilde;o de DNS</h1>
+
+<p lang="pt-PT">Esta demonstra&ccedil;&atilde;o destina-se a fornecer
+os conhecimentos b&aacute;sicos para instalar e configurar um
+servidor DNS num sistema Linux Fedora Core. Para al&eacute;m de algum
+conte&uacute;do te&oacute;rico, inclui alguns exerc&iacute;cios
+pr&aacute;ticos onde se podem exercitar os conhecimentos.</p>
+
+<p><span lang="pt-PT">Esta demonstra&ccedil;&atilde;o usa o conte&uacute;do
+da p&aacute;gina <a href="http://www.linuxhomenetworking.com/wiki/index.php/Quick_HOWTO_:_Ch18_:_Configuring_DNS#In%20This%20Chapter">http://www.linuxhomenetworking.com/</a>
+e do <a href="http://www.educ.umu.se/%7Ebjorn/linux/howto/DNS-HOWTO.html#toc3">FAQ
+de DNS</a> como p&aacute;ginas de refer&ecirc;ncia para o conte&uacute;do
+te&oacute;rico. No entanto, acrescenta mais alguma informa&ccedil;&atilde;o
+retirada do livro "DNS and Bind 4th Edition", de Paul
+Albitz e Cricket Liu, publicado pela O'Reilly.</span></p>
+
+<hr>
+<h2 lang="pt-PT">&Iacute;ndice</h2>
+
+<ul>
+
+	<li>
+    <p style="margin-bottom: 0cm;"><a href="#1"><span lang="pt-PT">1.
+	Comandos para consultar o servi&ccedil;o DNS</span></a> 
+	</p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><a href="#2"><span lang="pt-PT">2.
+	Ficheiros de configura&ccedil;&atilde;o do DNS no Linux Fedora Core</span></a>
+		</p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><a href="#3"><span lang="pt-PT">3.
+	Servidor DNS local s&oacute; para <i>caching</i></span></a> 
+	</p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><a href="#4"><span lang="pt-PT">4.
+	Servidor DNS local com reenvio</span></a> 
+	</p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><a href="#5"><span lang="pt-PT">5.
+	Defini&ccedil;&atilde;o de dom&iacute;nio local com um servidor DNS</span></a>
+		</p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><a href="#6"><span lang="pt-PT">6.
+	Defini&ccedil;&atilde;o de subdom&iacute;nio remoto</span></a> 
+	</p>
+
+	</li>
+  <li>
+    <p style="margin-bottom: 0cm;"><a href="#7"><span lang="pt-PT">7.
+	Defini&ccedil;&atilde;o de um servidor DNS secund&aacute;rio</span></a>
+		</p>
+
+  </li>
+</ul>
+
+<hr>
+<h2 lang="pt-PT"><a name="1"></a>1. Comandos para consultar o servi&ccedil;o
+DNS</h2>
+
+<h3 lang="pt-PT">Para Linux:</h3>
+<a name="AutoNumber1"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <ul>
+
+				<li>
+          <p><b>host</b> 
+				</p>
+
+			</li>
+      </ul>
+
+			
+      <p lang="pt-PT">O comando <i>host</i> aceita como argumentos o
+			nome do dom&iacute;nio ou o endere&ccedil;o IP e retorna os
+			resultados mostrados abaixo</p>
+
+			
+      <h4><u>Exemplo de pesquisa directa<br>
+      </u><span style="text-decoration: none;"><i>$
+			host -t AAAA tele1.dee.fct.unl.pt 193.136.120.1</i></span></h4>
+
+			
+      <p style="margin-bottom: 0cm; text-decoration: none;">Using domain
+			server:</p>
+
+			
+      <p style="margin-bottom: 0cm; text-decoration: none;">Name:
+			193.136.120.1<br>
+Address:
+			193.136.120.1#53<br>
+Aliases:<br>
+tele1.dee.fct.unl.pt has AAAA
+			address 2001:690:2040:a400::10</p>
+
+			
+      <h4><u>Exemplo de pesquisa inversa<br>
+      </u><i>$ host
+			193.136.127.217 193.136.120.1</i></h4>
+
+			
+      <p lang="pt-PT">Using domain server:<br>
+Name:
+			193.136.120.1<br>
+Address:
+			193.136.120.1#53<br>
+Aliases:<br>
+217.127.136.193.in-addr.arpa
+			domain name pointer tele1.dee.fct.unl.pt.</p>
+
+			
+      <p><span lang="pt-PT">Para obter mais informa&ccedil;&otilde;es
+			corra o comando <a href="man_host.html">"man host"</a></span></p>
+
+		</td>
+
+	</tr>
+
+	<tr>
+
+		<td width="100%">
+			
+      <ul>
+
+				<li>
+          <p><b>dig</b> 
+				</p>
+
+			</li>
+      </ul>
+
+			
+      <p lang="pt-PT">O comando <i>dig</i> permite fazer resolu&ccedil;&otilde;es
+			directas de nomes ou indirectas de endere&ccedil;os. No entanto,
+			por omiss&atilde;o retorna muito mais informa&ccedil;&atilde;o do
+			que o comando <i>host</i>.</p>
+
+			
+      <h4><u>Exemplo de pesquisa directa</u><br>
+$ dig @193.136.120.1
+			tele1.dee.fct.unl.pt AAAA</h4>
+
+			
+      <p>; &lt;&lt;&gt;&gt; DiG 9.2.5 &lt;&lt;&gt;&gt; @193.136.120.1
+			tele1.dee.fct.unl.pt AAAA<br>
+; (1 server found)<br>
+;; global
+			options: printcmd<br>
+;; Got answer:<br>
+;; -&gt;&gt;HEADER&lt;&lt;-
+			opcode: QUERY, status: NOERROR, id: 47644<br>
+;; flags: qr aa rd
+			ra; QUERY: 1, ANSWER: 1, AUTHORITY: 3, ADDITIONAL: 3</p>
+
+			
+      <p>;; QUESTION SECTION:<br>
+;tele1.dee.fct.unl.pt. IN AAAA</p>
+
+			
+      <p>;; ANSWER SECTION:<br>
+tele1.dee.fct.unl.pt. 86400 IN AAAA
+			2001:690:2040:a400::10</p>
+
+			
+      <p>;; AUTHORITY SECTION:<br>
+dee.fct.unl.pt. 86400 IN NS
+			ns2.fct.unl.pt.<br>
+dee.fct.unl.pt. 86400 IN NS
+			ns.di.fct.unl.pt.<br>
+dee.fct.unl.pt. 86400 IN NS ns1.fct.unl.pt.</p>
+
+			
+      <p>;; ADDITIONAL SECTION:<br>
+ns.di.fct.unl.pt. 86400 IN A
+			193.136.122.1<br>
+ns1.fct.unl.pt. 86400 IN A
+			193.136.120.1<br>
+ns2.fct.unl.pt. 86400 IN A 193.136.120.2</p>
+
+			
+      <p>;; Query time: 64 msec<br>
+;; SERVER:
+			193.136.120.1#53(193.136.120.1)<br>
+;; WHEN: Wed Mar 16 22:24:23
+			2005<br>
+;; MSG SIZE rcvd: 170</p>
+
+			
+      <h4><u>Exemplo de pesquisa inversa</u><br>
+$ dig @193.136.120.1 -x
+			193.136.127.217</h4>
+
+			
+      <p>; &lt;&lt;&gt;&gt; DiG 9.2.5 &lt;&lt;&gt;&gt; @193.136.120.1 -x
+			193.136.127.217<br>
+; (1 server found)<br>
+;; global options:
+			printcmd<br>
+;; Got answer:<br>
+;; -&gt;&gt;HEADER&lt;&lt;- opcode:
+			QUERY, status: NOERROR, id: 24851<br>
+;; flags: qr aa rd ra; QUERY:
+			1, ANSWER: 1, AUTHORITY: 4, ADDITIONAL: 4</p>
+
+			
+      <p>;; QUESTION SECTION:<br>
+;217.127.136.193.in-addr.arpa. IN PTR</p>
+
+			
+      <p>;; ANSWER SECTION:<br>
+217.127.136.193.in-addr.arpa. 3600 IN PTR
+			tele1.dee.fct.unl.pt.</p>
+
+			
+      <p>;; AUTHORITY SECTION:<br>
+127.136.193.in-addr.arpa. 3600 IN NS
+			ns2.fct.unl.pt.<br>
+127.136.193.in-addr.arpa. 3600 IN NS
+			ns-rev.dns.pt.<br>
+127.136.193.in-addr.arpa. 3600 IN NS
+			ns.di.fct.unl.pt.<br>
+127.136.193.in-addr.arpa. 3600 IN NS
+			ns1.fct.unl.pt.</p>
+
+			
+      <p>;; ADDITIONAL SECTION:<br>
+ns.di.fct.unl.pt. 86400 IN A
+			193.136.122.1<br>
+ns1.fct.unl.pt. 86400 IN A
+			193.136.120.1<br>
+ns2.fct.unl.pt. 86400 IN A
+			193.136.120.2<br>
+ns-rev.dns.pt. 3626 IN A 193.136.0.3</p>
+
+			
+      <p>;; Query time: 88 msec<br>
+;; SERVER:
+			193.136.120.1#53(193.136.120.1)<br>
+;; WHEN: Wed Mar 16 22:21:08
+			2005<br>
+;; MSG SIZE rcvd: 225</p>
+
+			
+      <p><span lang="pt-PT">Para obter mais informa&ccedil;&otilde;es
+			corra o comando <a href="man_dig.html">"man dig"</a></span></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<h3 lang="pt-PT">Para Windows:</h3>
+<a name="AutoNumber2"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <ul>
+
+				<li>
+          <p><b>nslookup</b> 
+				</p>
+
+			</li>
+      </ul>
+
+			
+      <p>O comando <b>nslookup</b> pode ser usado em Windows (ou em
+			Linux) para realizar tradu&ccedil;&otilde;es directas ou inversas.</p>
+
+			
+      <p><u>Exemplo de tradu&ccedil;&atilde;o directa<br>
+      </u>C:\&gt;
+			<i>nslookup
+			<a href="http://www.linuxhomenetworking.com/">www.linuxhomenetworking.com</a><br>
+      </i>Server:&nbsp;&nbsp;192-168-1-200.my-site.com<br>
+Address:&nbsp;&nbsp;192.168.1.200<br>
+Non-authoritative
+			answer:<br>
+Name:&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.linuxhomenetworking.com/">www.linuxhomenetworking.com</a><br>
+Address:&nbsp;&nbsp;65.115.71.34</p>
+
+			
+      <p><u>Exemplo tradu&ccedil;&atilde;o inversa<br>
+      </u>C:\&gt;
+			<i>nslookup
+			65.115.71.34<br>
+      </i>Server:&nbsp;&nbsp;192-168-1-200.my-site.com<br>
+Address:&nbsp;&nbsp;192.168.1.200<br>
+Name:&nbsp;&nbsp;&nbsp;&nbsp;65-115-71-34.my-isp.com<br>
+Address:&nbsp;&nbsp;65.115.71.34</p>
+
+			
+      <p>O nslookup tamb&eacute;m pode ser usado no modo de consola,
+			introduzindo simplesmente "nslookup".<br>
+Neste modo, a
+			vers&atilde;o windows aceita os seguintes comandos (os
+			identificadores s&atilde;o apresentados em mai&uacute;sculas, []
+			significa<br>
+opcional):</p>
+
+			
+      <p>NAME - imprimir informa&ccedil;&otilde;es sobre o NAME do
+			anfitri&atilde;o/dom&iacute;nio utilizando o servidor
+			predefinido<br>
+NAME1 NAME2 - como o anterior, mas utilizando NAME2
+			como servidor<br>
+help ou ? - imprimir informa&ccedil;&otilde;es
+			sobre os comandos comuns<br>
+set OPTION - definir uma op&ccedil;&atilde;o<br>
+&nbsp;&nbsp;&nbsp;
+			all - imprimir op&ccedil;&otilde;es, servidor actual e
+			anfitri&atilde;o<br>
+&nbsp;&nbsp;&nbsp; [no]debug - imprimir
+			informa&ccedil;&otilde;es de depura&ccedil;&atilde;o<br>
+&nbsp;&nbsp;&nbsp;
+			[no]d2 - imprimir informa&ccedil;&otilde;es de depura&ccedil;&atilde;o
+			exaustivas<br>
+&nbsp;&nbsp;&nbsp; [no]defname - acrescentar o nome
+			do dom&iacute;nio a cada consulta<br>
+&nbsp;&nbsp;&nbsp;
+			[no]recurse - pedir uma resposta recursiva para a consulta<br>
+&nbsp;&nbsp;&nbsp;
+			[no]search - utilizar a lista de procura de dom&iacute;nios<br>
+&nbsp;&nbsp;&nbsp;
+			[no]vc - utilizar sempre um circuito virtual<br>
+&nbsp;&nbsp;&nbsp;
+			domain=NAME - definir o dom&iacute;nio predefinido como NAME<br>
+&nbsp;&nbsp;&nbsp;
+			srchlist=N1[/N2/.../N6] - definir o dom&iacute;nio como N1 e a
+			lista de procura como N1,N2, etc.<br>
+&nbsp;&nbsp;&nbsp; root=NAME
+			- definir o servidor raiz como NAME<br>
+&nbsp;&nbsp;&nbsp; retry=X
+			- definir o n&uacute;mero de repeti&ccedil;&otilde;es para X<br>
+&nbsp;&nbsp;&nbsp;
+			timeout=X - definir o intervalo de tempo de espera inicial como X
+			segundos<br>
+&nbsp;&nbsp;&nbsp; type=X - definir o tipo de consulta
+			(ex. A,ANY,CNAME,MX,NS,PTR,SOA,SRV)<br>
+&nbsp;&nbsp;&nbsp;
+			querytype=X - o mesmo que o tipo<br>
+&nbsp;&nbsp;&nbsp; class=X -
+			definir a classe de consulta (ex. IN (Internet), ANY)<br>
+&nbsp;&nbsp;&nbsp;
+			[no]msxfr - utilizar a transfer&ecirc;ncia de zona r&aacute;pida
+			de MS<br>
+&nbsp;&nbsp;&nbsp; ixfrver=X - a vers&atilde;o actual a
+			utilizar num pedido de transfer&ecirc;ncia IXFR<br>
+&nbsp;&nbsp;&nbsp;
+			server NAME - definir o servidor predefinido como NAME, utilizando
+			o servidor predefinido actual<br>
+&nbsp;&nbsp;&nbsp; lserver NAME -
+			definir o servidor predefinido como NAME, utilizando o servidor
+			inicial<br>
+&nbsp;&nbsp;&nbsp; finger [USER] - finger do NAME
+			opcional no anfitri&atilde;o predefinido actual<br>
+&nbsp;&nbsp;&nbsp;
+			root - definir o servidor predefinido actual como raiz<br>
+&nbsp;&nbsp;&nbsp;
+			ls [opt] DOMAIN [&gt; FILE] - lista de endere&ccedil;os no DOMAIN
+			(opcional: sa&iacute;da para FILE)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			-a - lista de nomes can&oacute;nicos e aliases<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			-d - lista de todos os registos<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			-t TYPE - lista os registos do tipo indicado (ex.:.
+			A,CNAME,MX,NS,PTR etc.)<br>
+&nbsp;&nbsp;&nbsp; view FILE - ordena
+			um ficheiro de sa&iacute;da 'ls' e apresenta-o com pg<br>
+&nbsp;&nbsp;&nbsp;
+			exit - sair do programa</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<h3>Exerc&iacute;cio</h3>
+
+<p>Use um dos comandos apresentados acima para descobrir o conte&uacute;do
+dos registos de recursos (RR) dos seguintes nomes:</p>
+
+<p><i>tele1.dee.fct.unl.pt<br>
+fct.unl.pt</i></p>
+
+<p>Relembra-se alguns dos tipos dispon&iacute;veis no DNS:</p>
+
+<table border="0" cellpadding="0" cellspacing="0">
+
+	<tbody>
+    <tr valign="top">
+
+		<td width="85">
+			
+      <p style="border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color rgb(0, 0, 0); border-width: medium medium 1pt; padding: 0cm 0cm 0.05cm;">
+			<font size="3">Tipo</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color rgb(0, 0, 0); border-width: medium medium 1pt; padding: 0cm 0cm 0.05cm;">
+			<font size="3">Significado</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border-style: none none solid; border-color: -moz-use-text-color -moz-use-text-color rgb(0, 0, 0); border-width: medium medium 1pt; padding: 0cm 0cm 0.05cm;">
+			<font size="3">Conte&uacute;do</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="85">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.1cm;"><font size="3">A</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">IPv4
+			Host Address</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">32-bit
+			IP address</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="85">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.1cm;"><font size="3">AAAA</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">IPv6
+			Host Address</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">128-bit
+			IP address</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="85">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.1cm;"><font size="3">CNAME</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Canonical
+			Name</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Canonical
+			Domain Name for an alias</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="85">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.1cm;"><font size="3">MX</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Mail
+			Exchanger</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">16-bit
+			preference and name of host that acts as mail exchanger for the
+			domain</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="85">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.1cm;"><font size="3">NS</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Name
+			Server</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Name
+			of authoritative server for domain</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="85">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.1cm;"><font size="3">HINFO</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">CPU
+			&amp; OS</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Name
+			of CPU and Operating System</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="85">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.1cm;"><font size="3">MINFO</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Mailbox
+			info</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Information
+			about a mailbox or mail list</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="85">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.1cm;"><font size="3">PTR</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Pointer</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Domain
+			name (like a symbolic link)</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="85">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.1cm;"><font size="3">SOA</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Start
+			of Authority</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Multiple
+			fields that specify which parts of the naming hierarchy a server
+			implements</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="85">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.1cm;"><font size="3">TXT</font></p>
+
+		</td>
+
+		<td width="153">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Arbitrary
+			text</font></p>
+
+		</td>
+
+		<td width="285">
+			
+      <p style="border: medium none ; padding: 0cm; margin-left: 0.25cm;"><font size="3">Uninterpreted
+			string of ASCII text</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<hr>
+<h2 lang="pt-PT"><a name="2"></a>2. Ficheiros de configura&ccedil;&atilde;o
+do DNS no Linux Fedora Core</h2>
+
+<h3>Cliente DNS</h3>
+
+<p>Os nomes de dom&iacute;nios podem ser resolvidos utilizando o
+ficheiro /etc/hosts ou o servi&ccedil;o DNS. A ordem porque os
+servi&ccedil;os s&atilde;o consultados &eacute; definida no ficheiro
+<i>/etc/host.conf</i>:</p>
+<a name="AutoNumber11"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><font size="2">order hosts,bind</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>A configura&ccedil;&atilde;o do cliente DNS &eacute; feita no
+ficheiro <i>/etc/resolv.conf</i>:</p>
+<a name="AutoNumber21"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <pre>search alunos.dee.fct.unl.pt fct.unl.pt<br>nameserver 193.136.120.1<br>nameserver 193.136.120.2<br>nameserver 193.136.122.1</pre>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>A configura&ccedil;&atilde;o inclui a lista de servidores DNS que
+devem ser usados, e a lista de dom&iacute;nios que devem ser testados
+quando se resolve um nome (ou <i>localdomain</i> quando n&atilde;o
+existe um dom&iacute;nio definido na zona).</p>
+
+<p>Campos:</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+
+	<tbody>
+    <tr valign="top">
+
+		<td bgcolor="#008000" width="96">
+			
+      <p style="border: 1pt solid rgb(0, 0, 0); padding: 0.25cm 0.2cm; margin-left: 0.35cm; margin-top: 0.21cm;" align="center">
+			<font color="#ffffff"><font style="font-size: 11pt;" size="2"><b>Keyword</b></font></font></p>
+
+		</td>
+
+		<td bgcolor="#008000" width="384">
+			
+      <p style="border-style: solid solid solid none; border-color: rgb(0, 0, 0) rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: 1pt 1pt 1pt medium; padding: 0.05cm 0.05cm 0.05cm 0cm; margin-left: 0.35cm; margin-top: 0.21cm;" align="center">
+			<font color="#ffffff"><font style="font-size: 11pt;" size="2"><b>Value</b></font></font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="96">
+			
+      <p style="border-style: none solid solid; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0); border-width: medium 1pt 1pt; padding: 0cm 0.2cm 0.25cm; margin-left: 0.35cm; margin-top: 0.21cm;">
+			<font style="font-size: 11pt;" size="2">Nameserver</font></p>
+
+		</td>
+
+		<td width="384">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm; margin-left: 0.35cm; margin-top: 0.21cm;">
+			<font style="font-size: 11pt;" size="2">IP address of your DNS
+			nameserver. There should be only one entry per "nameserver"
+			keyword. If there is more than one nameserver, you'll need to have
+			multiple "nameserver" lines.</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="96">
+			
+      <p style="border-style: none solid solid; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0); border-width: medium 1pt 1pt; padding: 0cm 0.2cm 0.25cm; margin-left: 0.35cm; margin-top: 0.21cm;">
+			<font style="font-size: 11pt;" size="2">Domain</font></p>
+
+		</td>
+
+		<td width="384">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm; margin-left: 0.35cm; margin-top: 0.21cm;">
+			<font style="font-size: 11pt;" size="2">The local domain name to be
+			used by default. If the server is bigboy.my-site.com, then the
+			entry would just be my-site.com</font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="96">
+			
+      <p style="border-style: none solid solid; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0); border-width: medium 1pt 1pt; padding: 0cm 0.2cm 0.25cm; margin-left: 0.35cm; margin-top: 0.21cm;">
+			<font style="font-size: 11pt;" size="2">Search</font></p>
+
+		</td>
+
+		<td width="384">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm; margin-left: 0.35cm; margin-top: 0.21cm;">
+			<font style="font-size: 11pt;" size="2">If you refer to another
+			server just by its name without the domain added on, DNS on your
+			client will append the server name to each domain in this list and
+			do an DNS lookup on each to get the remote servers' IP address.
+			This is a handy time saving feature to have so that you can refer
+			to servers in the same domain by only their servername without
+			having to specify the domain. The domains in this list must
+			separated by spaces.</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<h3>Servidor DNS</h3>
+
+<p>O servidor DNS mais usado designa-se de <a href="http://www.isc.org/index.pl?/sw/bind/" target="_top">BIND</a>
+e foi desenvolvido pela ISC.</p>
+
+<p>A distribui&ccedil;&atilde;o Fedora Core inclui uma vers&atilde;o
+modificada do BIND, que corre como um utilizador diferente de "root"
+(administrador de sistema), designado de BIND chroot. Esta
+distribui&ccedil;&atilde;o tem os ficheiros de configura&ccedil;&atilde;o
+num local diferente o BIND regular.</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+
+	<tbody>
+    <tr valign="top">
+
+		<td bgcolor="#008000" width="91">
+			
+      <p style="border: 1pt solid rgb(0, 0, 0); padding: 0.25cm 0.2cm;" align="center">
+			<font color="#ffffff"><b>File</b></font></p>
+
+		</td>
+
+		<td bgcolor="#008000" width="208">
+			
+      <p style="border-style: solid solid solid none; border-color: rgb(0, 0, 0) rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: 1pt 1pt 1pt medium; padding: 0.05cm 0.05cm 0.05cm 0cm;" align="center">
+			<font color="#ffffff"><b>Purpose</b></font></p>
+
+		</td>
+
+		<td bgcolor="#008000" width="200">
+			
+      <p style="border-style: solid solid solid none; border-color: rgb(0, 0, 0) rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: 1pt 1pt 1pt medium; padding: 0.05cm 0.05cm 0.05cm 0cm;" align="center">
+			<font color="#ffffff"><b>BIND chroot Location</b></font></p>
+
+		</td>
+
+		<td bgcolor="#008000" width="139">
+			
+      <p style="border-style: solid solid solid none; border-color: rgb(0, 0, 0) rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: 1pt 1pt 1pt medium; padding: 0.05cm 0.05cm 0.05cm 0cm;" align="center">
+			<font color="#ffffff"><b>Regular BIND Location</b></font></p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="91">
+			
+      <p style="border-style: none solid solid; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0); border-width: medium 1pt 1pt; padding: 0cm 0.2cm 0.25cm;">
+			named.conf</p>
+
+		</td>
+
+		<td width="208">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm;">
+			Tells the names of the zone files to be used for each of your
+			website domains.</p>
+
+		</td>
+
+		<td width="200">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm;">
+			/var/named/chroot/etc</p>
+
+		</td>
+
+		<td width="139">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm;">
+			/etc</p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="91">
+			
+      <p style="border-style: none solid solid; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0); border-width: medium 1pt 1pt; padding: 0cm 0.2cm 0.25cm;">
+			rndc.key</p>
+
+			
+      <p style="border-style: none solid solid; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0); border-width: medium 1pt 1pt; padding: 0cm 0.2cm 0.25cm;">
+			rndc.conf</p>
+
+		</td>
+
+		<td width="208">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm;">
+			Files used in named authentication</p>
+
+		</td>
+
+		<td width="200">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm;">
+			/var/named/chroot/etc</p>
+
+		</td>
+
+		<td width="139">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm;">
+			/etc</p>
+
+		</td>
+
+	</tr>
+
+	<tr valign="top">
+
+		<td width="91">
+			
+      <p style="border-style: none solid solid; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0); border-width: medium 1pt 1pt; padding: 0cm 0.2cm 0.25cm;">
+			zone files</p>
+
+		</td>
+
+		<td width="208">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm;">
+			Links all the IP addresses in your domain to their corresponding
+			server</p>
+
+		</td>
+
+		<td width="200">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm;">
+			/var/named/chroot/var/named</p>
+
+		</td>
+
+		<td width="139">
+			
+      <p style="border-style: none solid solid none; border-color: -moz-use-text-color rgb(0, 0, 0) rgb(0, 0, 0) -moz-use-text-color; border-width: medium 1pt 1pt medium; padding: 0cm 0.2cm 0.25cm 0cm;">
+			/var/named</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>A configura&ccedil;&atilde;o principal de um servidor DNS &eacute;
+realizada no ficheiro <i>named.conf</i>.</p>
+
+<p>A parte inicial deste ficheiro tem a defini&ccedil;&atilde;o de
+op&ccedil;&otilde;es gen&eacute;ricas do servidor:</p>
+<a name="AutoNumber5"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><font size="2">options {<br>
+&nbsp;&nbsp;&nbsp; directory
+"/var/named";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+&nbsp;&nbsp;&nbsp; dump-file
+"/var/named/data/cache_dump.db";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+&nbsp;&nbsp;&nbsp; statistics-file
+			"/var/named/data/named_stats.txt";<br>
+&nbsp;&nbsp;
+			/*<br>
+&nbsp;&nbsp;&nbsp; * If there is a firewall between you and
+			name servers you want<br>
+&nbsp;&nbsp;&nbsp; * to talk to, you
+			might need to uncomment the query-source<br>
+&nbsp;&nbsp;&nbsp; *
+			directive below. Previous versions of BIND always asked<br>
+&nbsp;&nbsp;&nbsp;
+			* questions using port 53, but BIND 8.1 uses an unprivileged<br>
+&nbsp;&nbsp;&nbsp;
+			* port by default.<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp;
+			// query-source address * port 53;<br>
+};</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p><br>
+Para controlar os pedidos que s&atilde;o realmente efectuados
+ao servidor DNS local, pode-se acrescentar uma sec&ccedil;&atilde;o
+opcional de <i>logging</i> a ligar o log de pedidos. Os pedidos s&atilde;o
+acescentados ao ficheiro geral <i>/etc/log/messages</i>, juntamente
+com todos os outros logs do sistema operativo.</p>
+
+<table border="1" bordercolor="#111111" cellpadding="2" cellspacing="0" width="100%">
+
+	<col width="256*">
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><font size="2">logging { category queries { default_syslog; }; };</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p><br>
+A parte seguinte tem um registo para cada zona (dom&iacute;nio)
+guardada no servidor DNS local. O suporte da resolu&ccedil;&atilde;o
+directa &eacute; feito atrav&eacute;s de um ficheiro do tipo:</p>
+<a name="AutoNumber4"></a>
+<table style="width: 100%;" border="1" bordercolor="#111111" cellpadding="0" cellspacing="0">
+
+	<tbody>
+    <tr>
+
+		<td style="width: 100%;">
+			
+      <p><font size="2">zone "g00.rit2.pt" {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;type
+master;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Servidor prim&aacute;rio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;notify
+no;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Opcional; N&atilde;o envia notifica&ccedil;&atilde;o de
+modifica&ccedil;&otilde;es para servidor secund&aacute;rio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;allow-query { any;
+			};&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Opcional; Pode-se
+			modificar para permitir pedidos s&oacute; de "192.168.1.0/24;"
+			...<br>
+&nbsp;&nbsp;&nbsp; allow-update { none; };&nbsp;&nbsp;&nbsp;
+			// Opcional; N&atilde;o permite actualiza&ccedil;&otilde;es<br>
+&nbsp;&nbsp;&nbsp;&nbsp;file
+			"g00.zone";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// Ficheiro com dados da zona<br>
+};</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>Um exemplo de um conte&uacute;do poss&iacute;vel para a zona "<span style="font-style: italic;">g00.zone</span>" poderia ser:</p>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td>
+      <p><font size="2">;<br>
+; Example of zone file for g00.rit2.pt<br>
+;<br>
+      </font><font size="2">$TTL 3D&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;; TTL para os
+registos do dom&iacute;nio<br>
+      </font><font size="2">@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+IN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SOA&nbsp;&nbsp;&nbsp;&nbsp; rit2.pt.
+mail.dee.fct.unl.pt. (&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp; ; name-server and e-mail address after SOA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+200503166&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; serial#<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; refresh, seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; retry, seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; expire, seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600 )&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; minimum,
+seconds<br>
+;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ns&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; Inet Address of nameserver<br>
+;<br>
+pc-11 &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 172.16.33.11&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </font><font size="2">; IPv4</font><br>
+      <font size="2">pc-11 &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
+AAAA&nbsp;&nbsp;&nbsp; 2001:690:2005:10:33::b &nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </font><font size="2">; IPv6</font><br>
+      <font size="2">;<br>
+local&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; CNAME&nbsp;&nbsp;
+pc-11&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ; alias<br>
+ns&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CNAME&nbsp;&nbsp; local<br>
+www&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CNAME&nbsp;&nbsp; local<br>
+      </font></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<p>Na parte final &eacute; comum aparecer um registo para dom&iacute;nio
+local, para suportar resolu&ccedil;&otilde;es inversas. Em IPv4, para
+a rede 172.16.33.0/24, tem o seguinte formato (note que o endere&ccedil;o
+aparece invertido no nome da zona):</p>
+
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><font size="2">zone "33.16.172.in-addr.arpa" {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;type
+			master;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;notify no;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;file
+			"172-16-33.zone";<br>
+};</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>A ordem inversa do endere&ccedil;o IP numa sec&ccedil;&atilde;o de
+zona &eacute; importante pois &eacute; por esse motivo que apenas os
+tr&ecirc;s primeiros octetos s&atilde;o representados. O &uacute;ltimo
+&eacute; definido no ficheiro de defini&ccedil;&atilde;o de zona. Um
+exemplo de conte&uacute;do poss&iacute;vel para o ficheiro "<span style="font-style: italic;">172-16-33.zone</span>" seria: 
+</p>
+
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td>
+      <p><font size="2">;<br>
+; Example of zone file for 172.16.33.x<br>
+;<br>
+$TTL 3D<br>
+@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+IN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SOA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font><font size="2">rit2.pt. mail.dee.fct.unl.pt.</font><font size="2"> (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+200503167&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; serial#<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; refresh, seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; retry, seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; expire, seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600 )&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; minimum,
+seconds<br>
+;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+NS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ns.g00.rit2.pt.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; Name
+server Address<br>
+;<br>
+11
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+PTR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pc-11.g00.rit2.pt.<br>
+      </font></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+
+<p>Para IPv6, o procedimento &eacute; semelhante excepto que o
+endere&ccedil;o de rede &eacute; escrito numa cadeia de digitos
+hexadecimais, do menos significativo para o mais significativo, com o
+sufixo <b><i>.ipv6.arpa.</i></b>. seguido do sufixo. Por exemplo, o
+endere&ccedil;o IPv6 <b>4321:0:1:2:3:4:567:89ab</b>
+&eacute; escrito
+na forma:
+b.a.9.8.7.6.5.0.4.0.0.0.3.0.0.0.2.0.0.0.1.0.0.0.0.0.0.0.1.2.3.4.ipv6.arpa.
+Um exemplo de campo de resolu&ccedil;&atilde;o inversa para IPv6 seria:</p>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td>
+      <p><font size="2">zone "3.3.0.0.0.1.0.0.5.0.0.2.0.9.6.0.1.0.0.2.ipv6.arpa" IN {<br>
+&nbsp;&nbsp;&nbsp; type master;<br>
+&nbsp;&nbsp;&nbsp; allow-update { none; }; <br>
+&nbsp;&nbsp;&nbsp; file "2001-690-2005-10-33.zone";<br>
+};</font><font size="2"><br>
+      </font></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<p>Um exemplo de conte&uacute;do poss&iacute;vel para o ficheiro "<span style="font-style: italic;">2001-690-2005-10-33.zone</span>" seria: 
+
+</p>
+<table style="text-align: left; width: 100%;" border="1" cellpadding="2" cellspacing="2">
+  <tbody>
+    <tr>
+      <td>
+      <p><font size="2">;<br>
+; Example of zone file for 2001:690:2005:10:33:x<br>
+;<br>
+$TTL 3D<br>
+@&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+IN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SOA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font size="2">rit2.pt. mail.dee.fct.unl.pt.</font><font size="2"> (<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+200503168&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; serial#<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; refresh, seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; retry, seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+; expire, seconds<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3600 )&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; minimum,
+seconds<br>
+;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+NS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font size="2">ns.g00.rit2.pt.</font><font size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; Nameserver Address<br>
+;<br>
+B.0.0.0.0.0.0.0.0.0.0.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PTR&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pc-11.g00.rit2.pt.<br>
+      </font></p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<br>
+<p>Pode
+encontrar mais informa&ccedil;&otilde;es nesta p&aacute;gina:
+<a href="http://www.rnp.br/newsgen/0205/ipv6_dns.html">http://www.rnp.br/newsgen/0205/ipv6_dns.html</a>
+e <a href="http://www.linux.ericsson.ca/ipv6/v6dns.html">http://www.linux.ericsson.ca/ipv6/v6dns.html</a>.</p>
+<p>Para obter mais informa&ccedil;&otilde;es sobre a
+configura&ccedil;&atilde;o das zonas em Linux recomenda-se a consulta
+da p&aacute;gina <a href="http://www.linuxhomenetworking.com/wiki/index.php/Quick_HOWTO_:_Ch18_:_Configuring_DNS#In%20This%20Chapter"><span lang="pt-PT">http://www.linuxhomenetworking.com/.</span></a>&nbsp;</p>
+<p>Podem-se arrancar mais do que um servidor DNS (/usr/sbin/named) no
+mesmo computador, desde que cada servidor use um n&uacute;mero de
+porto diferente.</p>
+
+<p>Podem-se obter os par&acirc;metros do comando named invocando o comando
+<a href="man_named.html">&ldquo;man named&rdquo;</a></p>
+
+<hr>
+<h2 lang="pt-PT"><a name="3"></a>3. Servidor DNS local s&oacute; para
+caching</h2>
+
+<p lang="pt-PT">O servi&ccedil;o DNS Fedora Core j&aacute; vem origem
+configurado para funcionar no modo caching:</p>
+<a name="AutoNumber3"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><font size="2">//<br>
+// named.conf for Red Hat caching-nameserver
+			<br>
+&nbsp;</font></p>
+
+			
+      <p><font size="2">//<br>
+options {<br>
+&nbsp;&nbsp;&nbsp; directory
+			"/var/named";<br>
+&nbsp;&nbsp;&nbsp; dump-file
+			"/var/named/data/cache_dump.db";<br>
+&nbsp;&nbsp;&nbsp;
+			statistics-file "/var/named/data/named_stats.txt";<br>
+&nbsp;&nbsp;
+			/*<br>
+&nbsp;&nbsp;&nbsp; * If there is a firewall between you and
+			nameservers you want<br>
+&nbsp;&nbsp;&nbsp; * to talk to, you might
+			need to uncomment the query-source<br>
+&nbsp;&nbsp;&nbsp; *
+			directive below. Previous versions of BIND always asked<br>
+&nbsp;&nbsp;&nbsp;
+			* questions using port 53, but BIND 8.1 uses an unprivileged<br>
+&nbsp;&nbsp;&nbsp;
+			* port by default.<br>
+&nbsp;&nbsp;&nbsp; */<br>
+&nbsp;&nbsp;&nbsp;
+			// query-source address * port 53;<br>
+};</font></p>
+
+			
+      <p><font size="2">// <br>
+// a caching only nameserver config<br>
+// </font>
+			</p>
+
+			
+      <p><font size="2">controls {<br>
+&nbsp;&nbsp;&nbsp; inet 127.0.0.1
+			allow { localhost; } keys { rndckey; };<br>
+};</font></p>
+
+			
+      <p><font size="2">zone "." IN {<br>
+&nbsp;&nbsp;&nbsp; type
+			hint;<br>
+&nbsp;&nbsp;&nbsp; file "named.ca";&nbsp;&nbsp;&nbsp;&nbsp;
+			// Lista com 13 servidores DNS raiz<br>
+};</font></p>
+
+			
+      <p><font size="2">zone "localdomain" IN {<br>
+&nbsp;&nbsp;&nbsp;
+			type master;<br>
+&nbsp;&nbsp;&nbsp; file "localdomain.zone";<br>
+&nbsp;&nbsp;&nbsp;
+			allow-update { none; };<br>
+};</font></p>
+
+			
+      <p><font size="2">zone "localhost" IN {<br>
+&nbsp;&nbsp;&nbsp;
+			type master;<br>
+&nbsp;&nbsp;&nbsp; file "localhost.zone";<br>
+&nbsp;&nbsp;&nbsp;
+			allow-update { none; };<br>
+};</font></p>
+
+			
+      <p><font size="2">zone "0.0.127.in-addr.arpa" IN {<br>
+&nbsp;&nbsp;&nbsp;
+			type master;<br>
+&nbsp;&nbsp;&nbsp; file "named.local";<br>
+&nbsp;&nbsp;&nbsp;
+			allow-update { none; };<br>
+};</font></p>
+
+			
+      <p><font size="2">zone
+			"0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa"
+			IN {<br>
+&nbsp;&nbsp;&nbsp; type master;<br>
+&nbsp;&nbsp;&nbsp; file
+			"named.ip6.local";<br>
+&nbsp;&nbsp;&nbsp; allow-update {
+			none; };<br>
+};</font></p>
+
+			
+      <p><font size="2">zone "255.in-addr.arpa" IN {<br>
+&nbsp;&nbsp;&nbsp;
+			type master;<br>
+&nbsp;&nbsp;&nbsp; file "named.broadcast";<br>
+&nbsp;&nbsp;&nbsp;
+			allow-update { none; };<br>
+};</font></p>
+
+			
+      <p><font size="2">zone "0.in-addr.arpa" IN {<br>
+&nbsp;&nbsp;&nbsp;
+			type master;<br>
+&nbsp;&nbsp;&nbsp; file "named.zero";<br>
+&nbsp;&nbsp;&nbsp;
+			allow-update { none; };<br>
+};</font></p>
+
+			
+      <p><font size="2">include "/etc/rndc.key";</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p lang="pt-PT">Para funcionar correctamente basta arrancar o
+servidor DNS e modificar a configura&ccedil;&atilde;o do cliente DNS.</p>
+
+<h3>Exerc&iacute;cio</h3>
+
+<p lang="pt-PT">Configure o seu computador para usar o servidor DNS
+local no modo <i>caching</i>. Teste a resolu&ccedil;&atilde;o de
+nomes no sistema.</p>
+
+<p lang="pt-PT">NOTA: foi colocado na &aacute;rea rit2 o ficheiro
+"<i>init_named</i>" que corre o comando "/etc/init.d/named"
+seguido dos par&acirc;metros que a invoca&ccedil;&atilde;o tiver, ou
+com o par&acirc;metro &ldquo;restart&rdquo; se forem omitidos os par&acirc;metros,
+permitindo arrancar com o servidor DNS.</p>
+
+<p lang="pt-PT">NOTA2: Para conseguir aceder ao ficheiro protegido
+/etc/var/messages foi colocado na &aacute;rea rit2 o ficheiro
+&ldquo;<i>get_log</i>&rdquo; que obt&eacute;m todas as linhas relacionadas
+com o servi&ccedil;o de nomes.</p>
+
+<hr>
+<h2 lang="pt-PT"><a name="4"></a>4. Servidor DNS local com reenvio 
+</h2>
+
+<p lang="pt-PT">Para optimizar a utiliza&ccedil;&atilde;o de <i>caching</i>
+no servi&ccedil;o DNS, pode-se configurar um servidor DNS para
+reenviar um pedido para outro servidor sempre que a resposta n&atilde;o
+exista em cache, ou perten&ccedil;a a um dom&iacute;nio local. Isso &eacute;
+feito com a op&ccedil;&atilde;o <i>forwarders</i>: 
+</p>
+<a name="AutoNumber6"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><font size="2">options {<br>
+&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp;
+			forwarders { 193.136.120.1; 193.136.120.2; 193.136.122.1; };<br>
+};</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<h3>Exerc&iacute;cio</h3>
+
+<p lang="pt-PT">Configure o servidor DNS do seu computador para usar
+com DNS de n&iacute;vel superior os tr&ecirc;s servidores DNS do
+dom&iacute;nio <i>fct.unl.pt</i>. Teste a resolu&ccedil;&atilde;o de
+nomes no sistema.</p>
+
+<hr>
+<h2 lang="pt-PT"><a name="5"></a>5. Defini&ccedil;&atilde;o de
+dom&iacute;nio local com um servidor DNS&nbsp; 
+</h2>
+
+<h3>Exerc&iacute;cio</h3>
+
+<p lang="pt-PT">Configure o dom&iacute;nio <b>g<i>n</i>.rit2.pt</b>
+no servidor DNS local, de maneira a conter entradas do tipo <b>A</b>
+e <b>AAAA</b> para todas as m&aacute;quinas do laborat&oacute;rio,
+<b>PTR</b> para a resolu&ccedil;&atilde;o inversa, e <b>CNAME</b> com
+o nome <i>router</i> para a m&aacute;quina <i>172.16.33.3</i>.
+Configure o servidor para suportar a resolu&ccedil;&atilde;o directa
+e inversa tanto em IPv4 como em IPv6. Acrescente registos do tipo <b>TXT</b>
+com a identifica&ccedil;&atilde;o do n&uacute;mero de grupo e dos
+membros do grupo, e do tipo <b>HINFO</b> com os dados da m&aacute;quina
+local. Teste o seu servidor local.</p>
+
+<hr>
+<h2 lang="pt-PT"><a name="6"></a>6. Defini&ccedil;&atilde;o de
+subdom&iacute;nio remoto&nbsp; 
+</h2>
+
+<p lang="pt-PT">A defini&ccedil;&atilde;o de subdom&iacute;nios &eacute;
+realizada atrav&eacute;s de mais um registo de zona e de um recurso
+do tipo NS dentro do dom&iacute;nio raiz do novo subdom&iacute;nio.</p>
+
+<h3>Exerc&iacute;cio</h3>
+
+<p lang="pt-PT">Crie um subdom&iacute;nio (<b>sg<i>n</i>.g<i>m</i>.rit2.pt</b>)
+na sua m&aacute;quina local (<b><i>n</i></b>), de um dom&iacute;nio
+de um outro grupo num computador ao seu lado (<b><i>m</i></b>).
+Configure o subdom&iacute;nio com as mesmas entradas do tipo A e AAAA
+do dom&iacute;nio principal. Pe&ccedil;a aos seus colegas para
+configurarem o RR NS que torna o seu subdom&iacute;nio v&aacute;lido.
+Configure na sua m&aacute;quina o dom&iacute;nio dual
+(<b>sg<i>m</i>.g<i>n</i>.rit2.pt</b>), de maneira a que os seus
+colegas possam aceder ao subdom&iacute;nio local deles.</p>
+
+<hr>
+<h2 lang="pt-PT"><a name="7"></a>7. Defini&ccedil;&atilde;o de um
+servidor DNS secund&aacute;rio&nbsp; 
+</h2>
+
+<p lang="pt-PT">Para al&eacute;m do tipo <i>master</i> &eacute;
+poss&iacute;vel configurar uma zona com o tipo <i>slave</i>, de
+maneira a configurar servidores DNS secund&aacute;rios.<br>
+P<span style="background: transparent none repeat scroll 0%; -moz-background-clip: initial; -moz-background-origin: initial; -moz-background-inline-policy: initial;">ara
+criar um servidor secund&aacute;rio, com uma c&oacute;pia de um
+servidor prim&aacute;rio, &eacute; necess&aacute;rio come&ccedil;ar
+por copiar o ficheiro de configura&ccedil;&atilde;o named.conf e o
+conte&uacute;do dos ficheiros da directoria
+<i><font size="2">/var/named/chroot/var/named </font></i>p</span>ara a
+directoria correspondentes na m&aacute;quina remota. Pode usar o
+comando <i>scp</i>:</p>
+<a name="AutoNumber9"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><font size="2">scp /var/named/chroot/etc/named.conf
+			guest@pc-0:/var/named/chroot/etc/named.conf<br>
+cd
+			/var/named/chroot/var/named; scp *
+			guest@pc-0:/var/named/chroot/var/named</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p><br>
+No servidor secund&aacute;rio deve-se modificar a configura&ccedil;&atilde;o
+da zona:</p>
+<a name="AutoNumber10"></a>
+<table border="1" bordercolor="#111111" cellpadding="0" cellspacing="0" width="100%">
+
+	<tbody>
+    <tr>
+
+		<td width="100%">
+			
+      <p><font size="2">zone "g00.rit2.pt" {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;type
+slave;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// Servidor prim&aacute;rio<br>
+&nbsp;&nbsp;&nbsp;&nbsp;file
+			"bak.g00.zone";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //
+			Ficheiro criado pelo servidor com c&oacute;pia local dos dados do
+			prim&aacute;rio; n&atilde;o cria ficheiro se omitido<br>
+&nbsp;&nbsp;&nbsp;
+			masters {172.16.33.11; };<br>
+};</font></p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p>Deve-se ainda ligar a notifica&ccedil;&atilde;o de modifica&ccedil;&otilde;es,
+de maneira a que o servidor secund&aacute;rio seja actualizado
+automaticamente.</p>
+
+<h3>Exerc&iacute;cio</h3>
+
+<p lang="pt-PT">Juntamente com os mesmos colegas com que realizou o
+ponto anterior, desligue o subdom&iacute;nio, e sorteie quem vai
+correr o servidor secund&aacute;rio. <br>
+N&atilde;o se esque&ccedil;am
+de modificar a configura&ccedil;&atilde;o da zona, de maneira a
+incluir dois servidores respons&aacute;veis pelo dom&iacute;nio.
+Teste a resolu&ccedil;&atilde;o de nomes no sistema, incluindo o
+teste do desligar do servidor prim&aacute;rio.</p>
+
+<hr>
+<p lang="pt-PT">H&aacute; muito mais a dizer sobre o servi&ccedil;o
+DNS do que o que aparece neste documento: DNS seguro; DNS din&acirc;mico;
+zonas espec&iacute;ficas para redes internas, estat&iacute;sticas,
+etc.<br>
+Convida-se os alunos a lerem mais sobre o assunto...</p>
+
+</body>
+</html>

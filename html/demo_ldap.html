@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html style="direction: ltr;">
+<head>
+
+	
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=ISO-8859-1">
+
+	
+	
+  <title>Demonstra&ccedil;&atilde;o LDAP</title>
+  <meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+
+	
+  <meta name="CREATED" content="20050315;16121900">
+
+	
+  <meta name="CHANGED" content="20050317;1401300">
+  <meta content="Luis Bernardo" name="author">
+  <meta content="Muito breve apresenta&ccedil;&atilde;o de LDAP" name="description">
+</head>
+
+
+<body>
+
+<h1 style="text-align: left;" lang="pt-PT"><img src="gifs/Logo_FCT-UNL.gif" alt="Logo FCT/UNL grande" border="0" height="94" width="600"></h1>
+<p>
+<font size="+3">Redes
+Integradas de Telecomunica&ccedil;&otilde;es&nbsp; II</font> </p>
+
+<p><font size="+2">2006/2007</font></p>
+<hr>
+<h4></h4>
+<h1>Demonstra&ccedil;&atilde;o de LDAP</h1>
+
+<p>Come&ccedil;e por ler a p&aacute;gina sobre LDAP em
+<a href="http://www.linuxhomenetworking.com/linux-adv/ldap.htm">www.linuxhomenetworking.com</a>
+.</p>
+
+<p>Neste caso n&atilde;o vai realizar nenhuma configura&ccedil;&atilde;o.</p>
+
+<p>Sugere-se apenas que olhe para o conte&uacute;do dos ficheiros
+gerados seguindo as instru&ccedil;&otilde;es da p&aacute;gina, para
+uma &aacute;rea "ldap_demo", com password "demo",
+e para o servidor LDAP local com password LDAP. Por motivos de
+seguran&ccedil;a, n&atilde;o foi criada a &aacute;rea "root".</p>
+
+<p>O OpenLDAP j&aacute; cont&eacute;m a defini&ccedil;&atilde;o de
+tipos b&aacute;sicos nos ficheiros contidos na directoria:
+<a href="../../../etc/openldap/schema">/etc/openldap/schema</a>
+</p>
+
+<p>Seguindo as instru&ccedil;&otilde;es foi criado um ficheiro
+&ldquo;/etc/openldap/ldapusers.ldif&rdquo; com os dados do utilizador
+ldapuser, com o conte&uacute;do:</p>
+
+<table border="1" cellpadding="4" cellspacing="3" width="100%">
+
+	<col width="256*">
+	<tbody>
+    <tr>
+
+		<td valign="top" width="100%">
+			
+      <p>dn: uid=ldapuser,ou=People,dc=example,dc=com<br>
+uid:
+			ldapuser<br>
+cn: ldapuser<br>
+objectClass: account<br>
+objectClass:
+			posixAccount<br>
+objectClass: top<br>
+objectClass:
+			shadowAccount<br>
+userPassword:
+			{crypt}$1$XVBzWo4o$QpIV6RSexsx.4QxcBUPu81<br>
+shadowLastChange:
+			12857<br>
+shadowMax: 99999<br>
+shadowWarning: 7<br>
+loginShell:
+			/bin/bash<br>
+uidNumber: 501<br>
+gidNumber: 100<br>
+homeDirectory:
+			/home/ldapuser</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p><br>
+&Eacute; criada uma entrada com a raiz da DIT example.com</p>
+
+<table border="1" cellpadding="4" cellspacing="3" width="100%">
+
+	<col width="256*">
+	<tbody>
+    <tr>
+
+		<td valign="top" width="100%">
+			
+      <p>dn: dc=example,dc=com<br>
+dc: example<br>
+description: Root LDAP
+			entry for example.com<br>
+objectClass: dcObject<br>
+objectClass:
+			organizationalUnit<br>
+ou: rootobject <br>
+&nbsp;<br>
+dn: ou=People,
+			dc=example,dc=com<br>
+ou: People<br>
+description: All people in
+			organisation<br>
+objectClass: organizationalUnit</p>
+
+		</td>
+
+	</tr>
+
+  </tbody>
+</table>
+
+<p><br>
+Finalmente, os v&aacute;rios ficheiros s&atilde;o acrecentados
+&agrave; base de dados LDAP</p>
+
+<table border="1" cellpadding="4" cellspacing="3" width="100%">
+
+	<col width="256*">
+	<thead>
+		<tr>
+
+			<td valign="top" width="100%">
+				
+    <p>root@bigboy tmp]# <i>ldapadd -x -D
+				"cn=Manager,dc=example,dc=com" \<br>
+    </i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>-W
+				-f /etc/openldap/example.com.ldif<br>
+    </i>[root@bigboy tmp]#
+				<i>ldapadd -x -D "cn=Manager,dc=example,dc=com"
+				\<br>
+    </i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>-W -f
+				/etc/openldap/root.ldif<br>
+    </i>[root@bigboy tmp]# <i>ldapadd -x
+				-D "cn=Manager,dc=example,dc=com" \<br>
+    </i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>-W
+				-f /etc/openldap/ldapusers.ldif</i></p>
+
+			</td>
+
+		</tr>
+
+	</thead>
+</table>
+
+<p><br>
+<br>
+
+</p>
+
+<p>Para pesquisar usa-se o comando &ldquo;<i>ldapsearch</i>&rdquo;:</p>
+
+<p style="margin-bottom: 0cm;">Finalmente, os v&aacute;rios ficheiros
+s&atilde;o acrecentados &agrave; base de dados LDAP</p>
+
+<table border="1" cellpadding="4" cellspacing="3" width="100%">
+
+	<col width="256*">
+	<thead>
+		<tr>
+
+			<td valign="top" width="100%">
+				
+    <p>root@bigboy tmp]# <i>ldapsearch -x -b 'dc=example,dc=com'
+				'(objectclass=*)'</i></p>
+
+				
+    <p><i># extended LDIF<br>
+#<br>
+# LDAPv3<br>
+# base
+				&lt;dc=example,dc=com&gt; with scope sub<br>
+# filter:
+				(objectclass=*)<br>
+# requesting: ALL<br>
+#<br>
+    <br>
+#
+				example.com<br>
+dn: dc=example,dc=com<br>
+dc: example<br>
+description:
+				Root LDAP entry for example.com<br>
+objectClass:
+				dcObject<br>
+objectClass: organizationalUnit<br>
+ou: rootobject<br>
+    <br>
+#
+				People, example.com<br>
+dn: ou=People,dc=example,dc=com<br>
+ou:
+				People<br>
+description: All people in organisation<br>
+objectClass:
+				organizationalUnit<br>
+    <br>
+# ldapuser, People, example.com<br>
+dn:
+				uid=ldapuser,ou=People,dc=example,dc=com<br>
+uid: ldapuser<br>
+cn:
+				ldapuser<br>
+objectClass: account<br>
+objectClass:
+				posixAccount<br>
+objectClass: top<br>
+objectClass:
+				shadowAccount<br>
+userPassword::
+				e2NyeXB0fSQxJFhWQnpXbzRvJFFwSVY2UlNleHN4LjRReGNCVVB1ODE=<br>
+shadowLastChange:
+				12857<br>
+shadowMax: 99999<br>
+shadowWarning: 7<br>
+loginShell:
+				/bin/bash<br>
+uidNumber: 501<br>
+gidNumber: 100<br>
+homeDirectory:
+				/home/ldapuser<br>
+    <br>
+# search result<br>
+search: 2<br>
+result: 0
+				Success<br>
+    <br>
+# numResponses: 4<br>
+# numEntries: 3</i></p>
+
+			</td>
+
+		</tr>
+
+	</thead>
+</table>
+
+<p><br>
+<br>
+
+</p>
+
+</body>
+</html>
